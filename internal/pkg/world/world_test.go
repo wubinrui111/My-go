@@ -157,3 +157,33 @@ func TestWorldIsBlockAt(t *testing.T) {
 		t.Error("Expected block at position (1, 1)")
 	}
 }
+
+func TestWorldBlockOperationsAtNegativePositions(t *testing.T) {
+	world := NewWorld()
+	
+	// 在负坐标位置添加方块
+	world.AddBlock(-1, -2)
+	
+	// 检查方块是否存在
+	if !world.IsBlockAt(-1, -2) {
+		t.Error("Expected block at position (-1, -2)")
+	}
+	
+	// 获取方块
+	block, exists := world.GetBlock(-1, -2)
+	if !exists {
+		t.Error("Expected block to exist at position (-1, -2)")
+	}
+	
+	if block == nil {
+		t.Error("Expected block to be non-nil")
+	}
+	
+	// 移除方块
+	world.RemoveBlock(-1, -2)
+	
+	// 检查方块是否已移除
+	if world.IsBlockAt(-1, -2) {
+		t.Error("Expected no block at position (-1, -2) after removal")
+	}
+}

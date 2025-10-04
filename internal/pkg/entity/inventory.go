@@ -145,3 +145,42 @@ func (inv *Inventory) GetInventory() []ItemStack {
 	}
 	return inventory
 }
+
+// AddItem 添加物品到物品栏
+func (inv *Inventory) AddItem(itemType ItemType, count int) {
+	// 首先查找是否已有相同类型的物品可以堆叠
+	for i := 0; i < TotalSlotCount; i++ {
+		if inv.Slots[i].Type == itemType && inv.Slots[i].Count > 0 && inv.Slots[i].Count < 64 {
+			// 计算可以添加的数量
+			availableSpace := 64 - inv.Slots[i].Count
+			addCount := count
+			if count > availableSpace {
+				addCount = availableSpace
+			}
+			
+			inv.Slots[i].Count += addCount
+			count -= addCount
+			
+			if count <= 0 {
+				return // 所有物品都已添加
+			}
+		}
+	}
+	
+	// 如果还有剩余的物品，寻找空槽位
+	for i := 0; i < TotalSlotCount; i++ {
+		if inv.Slots[i].Type == Air {
+			addCount := count
+			if count > 64 {
+				addCount = 64
+			}
+			
+			inv.Slots[i] = ItemStack{Type: itemType, Count: addCount}
+			count -= addCount
+			
+			if count <= 0 {
+				return // 所有物品都已添加
+			}
+		}
+	}
+}

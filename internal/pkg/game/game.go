@@ -4,6 +4,7 @@ import (
 	"image/color"
 	"fmt"
 	"image"
+	"math"
 	_ "image/png"
 
 	"mygo/internal/pkg/entity"
@@ -69,6 +70,9 @@ func (g *Game) Update() error {
 	// 更新玩家状态
 	g.player.Update()
 	
+	// 更新世界状态（包括掉落物）
+	g.world.Update()
+	
 	// 更新摄像机跟随
 	g.camera.SetTarget(g.player.GetPosition())
 	g.camera.Update()
@@ -99,6 +103,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		
 		// 根据方块类型绘制对应的精灵
 		g.drawSprite(screen, screenX, screenY, int(block.GetType())+1) // +1因为0是玩家
+	}
+	
+	// 绘制所有掉落物
+	items := g.world.GetAllItems()
+	for _, item := range items {
+		itemX, itemY := item.GetPosition()
+		screenX, screenY := g.camera.WorldToScreen(itemX, itemY)
+		// 绘制物品（简单的彩色方块）
+		itemColor := getItemColor(item.GetItemType())
+		ebitenutil.DrawRect(screen, screenX-8, screenY-8, 16, 16, itemColor)
 	}
 	
 	// 绘制冲刺残影
@@ -405,8 +419,8 @@ func (g *Game) placeBlock() {
 	
 	// 转换为世界坐标
 	worldX, worldY := g.camera.ScreenToWorld(float64(mx), float64(my))
-	// 转换为网格坐标
-	gridX, gridY := int(worldX/32), int(worldY/32)
+	// 转换为网格坐标（使用math.Floor确保负数也能正确处理）
+	gridX, gridY := int(math.Floor(worldX/32)), int(math.Floor(worldY/32))
 	
 	// 如果网格位置没有变化，则不重复操作
 	if gridX == g.lastPlacePos[0] && gridY == g.lastPlacePos[1] {
@@ -442,8 +456,8 @@ func (g *Game) destroyBlock() {
 	
 	// 转换为世界坐标
 	worldX, worldY := g.camera.ScreenToWorld(float64(mx), float64(my))
-	// 转换为网格坐标
-	gridX, gridY := int(worldX/32), int(worldY/32)
+	// 转换为网格坐标（使用math.Floor确保负数也能正确处理）
+	gridX, gridY := int(math.Floor(worldX/32)), int(math.Floor(worldY/32))
 	
 	// 如果网格位置没有变化，则不重复操作
 	if gridX == g.lastDestroyPos[0] && gridY == g.lastDestroyPos[1] {
