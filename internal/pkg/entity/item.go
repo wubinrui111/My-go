@@ -191,18 +191,15 @@ func (item *ItemEntity) Draw(screen *ebiten.Image, cameraX, cameraY, offsetX, of
 
 // getItemColor 根据物品类型获取颜色
 func getItemColor(itemType ItemType) color.RGBA {
-	switch itemType {
-	case Stone:
+	// 由于Grass已合并到Dirt中，需要特殊处理
+	if itemType == Stone {
 		return color.RGBA{128, 128, 128, 255} // 灰色
-	case Dirt:
+	} else if itemType == Dirt || itemType == Grass {
 		return color.RGBA{150, 100, 50, 255}  // 棕色
-	case Grass:
-		return color.RGBA{50, 180, 50, 255}   // 绿色
-	case Wood:
+	} else if itemType == Wood {
 		return color.RGBA{150, 100, 50, 255}  // 棕色
-	case Leaves:
+	} else if itemType == Leaves {
 		return color.RGBA{30, 120, 30, 255}   // 深绿色
-	default:
-		return color.RGBA{255, 0, 255, 255}   // 品红色（默认）
 	}
+	return color.RGBA{255, 0, 255, 255}   // 品红色（默认）
 }

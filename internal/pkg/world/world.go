@@ -52,7 +52,7 @@ func (w *World) RemoveBlock(x, y int) {
 	// 在方块的中心位置生成掉落物
 	itemX := blockX + float64(entity.BlockSize)/2
 	itemY := blockY + float64(entity.BlockSize)/2
-	itemType := getBlockToItem(block.GetType())
+	itemType := getBlockDropItemType(block.GetType())
 	item := entity.NewItemEntity(itemX, itemY, itemType, 1)
 	item.SetWorld(w)
 	w.Items = append(w.Items, item)
@@ -125,20 +125,17 @@ func blockKey(x, y int) string {
 	return fmt.Sprintf("%d,%d", x, y)
 }
 
-// getBlockToItem 将方块类型转换为物品类型
-func getBlockToItem(blockType entity.BlockType) entity.ItemType {
-	switch blockType {
-	case entity.StoneBlock:
+// getBlockDropItemType 根据方块类型获取掉落物品类型
+func getBlockDropItemType(blockType entity.BlockType) entity.ItemType {
+	// 由于GrassBlock已合并到DirtBlock中，需要特殊处理
+	if blockType == entity.StoneBlock {
 		return entity.Stone
-	case entity.DirtBlock:
-		return entity.Dirt
-	case entity.GrassBlock:
-		return entity.Grass
-	case entity.WoodBlock:
+	} else if blockType == entity.DirtBlock || blockType == entity.GrassBlock {
+		return entity.Dirt // 泥土方块和草方块都掉落泥土物品
+	} else if blockType == entity.WoodBlock {
 		return entity.Wood
-	case entity.LeavesBlock:
+	} else if blockType == entity.LeavesBlock {
 		return entity.Leaves
-	default:
-		return entity.Stone // 默认为石头
 	}
+	return entity.Stone // 默认为石头
 }

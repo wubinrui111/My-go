@@ -12,13 +12,19 @@ const (
 // ItemType 物品类型
 type ItemType int
 
+// 注意：Grass已合并到Dirt中，此处仅为保持向后兼容性
 const (
 	Air ItemType = iota
 	Stone
-	Dirt
-	Grass
+	Dirt  // 合并了草物品，草只是显示不同，实际是泥土物品
+	// Grass = Dirt  // 注释掉这个定义，避免switch语句中的重复
 	Wood
 	Leaves
+)
+
+// 为了保持向后兼容性，定义一个常量指向Dirt
+const (
+	Grass ItemType = Dirt
 )
 
 // ItemStack 物品堆叠
@@ -43,10 +49,9 @@ func NewInventory() *Inventory {
 	
 	// 初始化一些测试物品
 	slots[0] = ItemStack{Type: Stone, Count: 64}
-	slots[1] = ItemStack{Type: Dirt, Count: 64}
-	slots[2] = ItemStack{Type: Grass, Count: 64}
-	slots[3] = ItemStack{Type: Wood, Count: 64}
-	slots[4] = ItemStack{Type: Leaves, Count: 64}
+	slots[1] = ItemStack{Type: Dirt, Count: 64}  // 使用合并后的泥土物品
+	slots[2] = ItemStack{Type: Wood, Count: 64}
+	slots[3] = ItemStack{Type: Leaves, Count: 64}
 	
 	return &Inventory{
 		Slots:       slots,
@@ -183,4 +188,19 @@ func (inv *Inventory) AddItem(itemType ItemType, count int) {
 			}
 		}
 	}
+}
+
+// getBlockToItem 将方块类型转换为物品类型
+func getBlockToItem(blockType BlockType) ItemType {
+	// 由于GrassBlock已合并到DirtBlock中，需要特殊处理
+	if blockType == StoneBlock {
+		return Stone
+	} else if blockType == DirtBlock || blockType == GrassBlock {
+		return Dirt  // 泥土方块和草方块都掉落泥土物品
+	} else if blockType == WoodBlock {
+		return Wood
+	} else if blockType == LeavesBlock {
+		return Leaves
+	}
+	return Stone // 默认为石头
 }

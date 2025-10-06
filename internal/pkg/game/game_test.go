@@ -154,3 +154,52 @@ func TestGameNegativeCoordinateOperations(t *testing.T) {
 		t.Error("Expected no block at position (-1, -1) after removal")
 	}
 }
+
+func TestWorldGeneration(t *testing.T) {
+	// 创建游戏实例（简化版，避免加载图像）
+	g := &Game{
+		world: world.NewWorld(),
+		player: entity.NewPlayer(0, 0),
+	}
+	
+	// 生成世界地形
+	g.GenerateWorldTerrain()
+	
+	// 检查是否生成了方块
+	blocks := g.world.GetAllBlocks()
+	
+	if len(blocks) == 0 {
+		t.Error("Expected world to have blocks generated, but found none")
+	}
+	
+	// 检查是否生成了不同类型的方块
+	blockTypes := make(map[entity.BlockType]int)
+	for _, block := range blocks {
+		blockTypes[block.GetType()]++
+	}
+	
+	if len(blockTypes) < 3 {
+		t.Errorf("Expected at least 3 different block types, got %d", len(blockTypes))
+	}
+	
+	t.Logf("Generated %d blocks with %d different types", len(blocks), len(blockTypes))
+}
+
+func TestPerlinNoise(t *testing.T) {
+	// 测试噪声生成器
+	noise := NewPerlinNoise(12345)
+	
+	// 测试噪声值范围
+	value := noise.Noise(0.5, 0.5)
+	if value < -1.0 || value > 1.0 {
+		t.Errorf("Noise value out of range: %f", value)
+	}
+	
+	// 测试FBM值范围
+	fbmValue := noise.FBM(0.5, 0.5, 1.0, 1.0, 4)
+	if fbmValue < -1.0 || fbmValue > 1.0 {
+		t.Errorf("FBM value out of range: %f", fbmValue)
+	}
+	
+	t.Logf("Noise value: %f, FBM value: %f", value, fbmValue)
+}

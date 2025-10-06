@@ -7,12 +7,18 @@ const (
 // BlockType 方块类型
 type BlockType int
 
+// 注意：GrassBlock已合并到DirtBlock中，此处仅为保持向后兼容性
 const (
 	StoneBlock BlockType = iota
-	DirtBlock
-	GrassBlock
+	DirtBlock  // 合并了草方块，草地只是显示不同，实际是泥土方块
+	// GrassBlock = DirtBlock  // 注释掉这个定义，避免switch语句中的重复
 	WoodBlock
 	LeavesBlock
+)
+
+// 为了保持向后兼容性，定义一个常量指向DirtBlock
+const (
+	GrassBlock BlockType = DirtBlock
 )
 
 // Block represents a block in the game world
@@ -49,7 +55,7 @@ func (b *Block) GetGridPosition() (int, int) {
 	return int(b.X / BlockSize), int(b.Y / BlockSize)
 }
 
-// GetType 获取方块类型
+// GetType returns the type of the block
 func (b *Block) GetType() BlockType {
 	return b.Type
 }
