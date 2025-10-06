@@ -114,6 +114,15 @@ func (p *PerlinNoise) FBM(x, y, frequency, amplitude float64, octaves int) float
 }
 
 // GenerateWorldTerrain 生成世界地形
+// 使用随机种子以确保每次生成不同的世界
+func (g *Game) GenerateWorldTerrain() {
+	// 使用随机种子以确保每次生成不同的世界
+	seed := int64(rand.Intn(1000000))
+	noise := NewPerlinNoise(seed)
+	g.GenerateWorldTerrainWithNoise(noise)
+}
+
+// GenerateWorldTerrainWithNoise 使用指定噪声生成世界地形
 // 使用Perlin噪声生成多样化的地形特征，包括：
 // 1. 基础地形（起伏的地面）
 // 2. 不同的生物群落（草地、沙漠、雪原）
@@ -122,9 +131,7 @@ func (p *PerlinNoise) FBM(x, y, frequency, amplitude float64, octaves int) float
 // 5. 湖泊
 // 6. 山脉
 // 7. 不同类型的植被（树木、仙人掌等）
-func (g *Game) GenerateWorldTerrain() {
-	noise := NewPerlinNoise(12345)
-	
+func (g *Game) GenerateWorldTerrainWithNoise(noise *PerlinNoise) {
 	// 生成基础地形，范围从-300到300格
 	for x := -300; x < 300; x++ {
 		// 使用噪声函数生成基础地形高度
@@ -356,8 +363,12 @@ func NewGame() *Game {
 		spriteSheet: spriteSheet,
 	}
 	
+	// 使用当前时间作为种子，生成随机世界
+	seed := int64(rand.Intn(1000000))
+	noise := NewPerlinNoise(seed)
+	
 	// 生成世界地形
-	g.GenerateWorldTerrain()
+	g.GenerateWorldTerrainWithNoise(noise)
 	
 	// 设置相机
 	g.camera.SetScreenSize(800, 600)
@@ -457,6 +468,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) { 
 	return 800, 600 
+}
+
+// GetAllBlocks 返回世界中的所有方块
+func (g *Game) GetAllBlocks() []*entity.Block {
+	return g.world.GetAllBlocks()
 }
 
 // handleInput 处理用户输入
