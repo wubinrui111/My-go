@@ -47,13 +47,13 @@ func (w *World) RemoveBlock(x, y int) {
 		return
 	}
 	
-	// 创建掉落物
+	// 创建掉落物（方块的缩影）
 	blockX, blockY := block.GetPosition()
 	// 在方块的中心位置生成掉落物
 	itemX := blockX + float64(entity.BlockSize)/2
 	itemY := blockY + float64(entity.BlockSize)/2
-	itemType := getBlockDropItemType(block.GetType())
-	item := entity.NewItemEntity(itemX, itemY, itemType, 1)
+	blockType := block.GetType()
+	item := entity.NewItemEntityFromBlock(itemX, itemY, blockType, 1)
 	item.SetWorld(w)
 	w.Items = append(w.Items, item)
 	

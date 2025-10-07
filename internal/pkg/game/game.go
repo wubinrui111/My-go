@@ -432,11 +432,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// 绘制所有掉落物
 	items := g.world.GetAllItems()
 	for _, item := range items {
-		itemX, itemY := item.GetPosition()
-		screenX, screenY := g.camera.WorldToScreen(itemX, itemY)
-		// 绘制物品（简单的彩色方块）
-		itemColor := getItemColor(item.GetItemType())
-		ebitenutil.DrawRect(screen, screenX-8, screenY-8, 16, 16, itemColor)
+		// 使用掉落物自己的绘制方法（带相机支持）
+		item.DrawWithCamera(screen, g.spriteSheet, g.camera)
 	}
 	
 	// 绘制冲刺残影

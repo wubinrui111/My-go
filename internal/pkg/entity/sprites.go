@@ -7,20 +7,20 @@ package entity
 const (
 	// 玩家精灵
 	PlayerSprite = iota
-	
+
 	// 方块精灵
 	StoneBlockSprite
-	DirtBlockSprite  // 合并了草方块和泥土方块
+	DirtBlockSprite // 合并了草方块和泥土方块
 	WoodBlockSprite
 	LeavesBlockSprite
-	
+
 	// 物品精灵（与方块精灵相同）
-	StoneItemSprite = StoneBlockSprite
-	DirtItemSprite  = DirtBlockSprite
-	GrassItemSprite = DirtBlockSprite  // 草物品使用泥土精灵
-	WoodItemSprite  = WoodBlockSprite
+	StoneItemSprite  = StoneBlockSprite
+	DirtItemSprite   = DirtBlockSprite
+	GrassItemSprite  = DirtBlockSprite // 草物品使用泥土精灵
+	WoodItemSprite   = WoodBlockSprite
 	LeavesItemSprite = LeavesBlockSprite
-	
+
 	// TODO: 添加更多精灵索引，如特效、UI元素等
 )
 
@@ -32,16 +32,16 @@ type SpriteInfo struct {
 
 // 所有精灵信息映射
 var SpriteMap = map[string]SpriteInfo{
-	"player": {PlayerSprite, "Player"},
-	"stone_block": {StoneBlockSprite, "Stone Block"},
-	"dirt_block": {DirtBlockSprite, "Dirt/Grass Block"},  // 合并了草方块和泥土方块
-	"wood_block": {WoodBlockSprite, "Wood Block"},
+	"player":       {PlayerSprite, "Player"},
+	"stone_block":  {StoneBlockSprite, "Stone Block"},
+	"dirt_block":   {DirtBlockSprite, "Dirt/Grass Block"}, // 合并了草方块和泥土方块
+	"wood_block":   {WoodBlockSprite, "Wood Block"},
 	"leaves_block": {LeavesBlockSprite, "Leaves Block"},
-	"stone_item": {StoneItemSprite, "Stone Item"},
-	"dirt_item": {DirtItemSprite, "Dirt Item"},
-	"grass_item": {GrassItemSprite, "Grass Item"},
-	"wood_item": {WoodItemSprite, "Wood Item"},
-	"leaves_item": {LeavesItemSprite, "Leaves Item"},
+	"stone_item":   {StoneItemSprite, "Stone Item"},
+	"dirt_item":    {DirtItemSprite, "Dirt Item"},
+	"grass_item":   {GrassItemSprite, "Grass Item"},
+	"wood_item":    {WoodItemSprite, "Wood Item"},
+	"leaves_item":  {LeavesItemSprite, "Leaves Item"},
 }
 
 // GetSpriteIndex 根据名称获取精灵索引
@@ -76,7 +76,7 @@ func GetBlockSpriteIndex(blockType BlockType) int {
 	if blockType == StoneBlock {
 		return StoneBlockSprite
 	} else if blockType == DirtBlock || blockType == GrassBlock {
-		return DirtBlockSprite  // 草方块使用泥土精灵
+		return DirtBlockSprite // 草方块使用泥土精灵
 	} else if blockType == WoodBlock {
 		return WoodBlockSprite
 	} else if blockType == LeavesBlock {
@@ -91,7 +91,7 @@ func GetItemSpriteIndex(itemType ItemType) int {
 	if itemType == Stone {
 		return StoneItemSprite
 	} else if itemType == Dirt || itemType == Grass {
-		return GrassItemSprite  // 草物品使用泥土精灵
+		return GrassItemSprite // 草物品使用泥土精灵
 	} else if itemType == Wood {
 		return WoodItemSprite
 	} else if itemType == Leaves {

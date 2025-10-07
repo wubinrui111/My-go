@@ -25,5 +25,5 @@ func main() {
 		fmt.Println("每次运行程序都会生成不同的地形和环境!")
 	}
 
-	fmt.Println("\n现在可以运行主游戏来体验随机生成的世界了!")
+	fmt.Println("\n ok boy zijibaikai")
 }
